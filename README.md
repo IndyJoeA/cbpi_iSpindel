@@ -2,6 +2,12 @@
 
 Allows your iSpindel digital hydrometer to send data to CraftBeerPi 3.0, such as the current temperature, gravity readings, and battery level. The plugin allows you to create multiple sensors, each of which is associated with a different data type that the iSpindel is capturing, so that you can use these sensors as you would any other sensor in CraftBeerPi.  You can also use multiple iSpindels for different fermentation chambers at the same time. See below for setup instructions and some screenshots of the configuration options.
 
+## Screenshots
+
+![ispindel1](https://user-images.githubusercontent.com/29404417/27406999-c5e664e2-56a4-11e7-9760-d587b5207a9a.png)
+
+![ispindel2](https://user-images.githubusercontent.com/29404417/27407013-d0a7edc4-56a4-11e7-9612-acae4576e9d8.png)
+
 ## Installation
 
 Click the **System** menu in CraftBeerPi, and then click **Add-On**.  Install the iSpindel plugin by clicking the **Download** button, and when you receive a notification, reboot the Raspberry Pi.
