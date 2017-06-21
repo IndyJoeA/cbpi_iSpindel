@@ -1,2 +1,2 @@
-# cbpi_Hydrometer
-Hydrometer plugin for CraftBeerPi 3.0
+# cbpi_iSpindel
+iSpindel plugin for CraftBeerPi 3.0
