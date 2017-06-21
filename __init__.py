@@ -8,8 +8,9 @@ import json
 from flask import Blueprint, render_template, jsonify, request
 from modules.core.props import Property
 
-blueprint = Blueprint('hydrometer', __name__)
+blueprint = Blueprint('ispindel', __name__)
 cache = {}
+
 
 def calcGravity(polynom, tilt):
 	# Calculate gravity from polynomial
@@ -19,8 +20,8 @@ def calcGravity(polynom, tilt):
 	return result
 
 @cbpi.sensor
-class Hydrometer(SensorActive):
-	key = Property.Text(label="Sensor ID", configurable=True)
+class iSpindel(SensorActive):
+	key = Property.Text(label="iSpindel Name", configurable=True)
 	sensorType = Property.Select("Data Type", options=["Temperature", "Gravity", "Battery"])
 	tuningPolynom = Property.Text(label="Tuning Polynomial", configurable=True, default_value="tilt")
 	unitsGravity = Property.Select("Gravity Units", options=["SG", "Brix", "°P"])
@@ -31,7 +32,7 @@ class Hydrometer(SensorActive):
 		elif self.sensorType == "Gravity":
 			return self.unitsGravity
 		elif self.sensorType == "Battery":
-			return "%"
+			return "V"
 		else:
 			return " "
 
@@ -41,10 +42,13 @@ class Hydrometer(SensorActive):
 	def execute(self):
 		global cache
 		while self.is_running():
-			try:
-				value = cache.pop(self.key, None)
-				if value is not None:
-					self.data_received(value)
+			try:				
+				if cache[self.key] is not None:
+					if self.sensorType == "Gravity":
+						reading = calcGravity(self.tuningPolynom, cache[self.key]['Angle'])
+					else:
+						reading = cache[self.key][self.sensorType]
+					self.data_received(reading)
 			except:
 				pass
 			self.api.socketio.sleep(1) 
@@ -55,23 +59,15 @@ def set_temp():
 	
 	data = request.get_json()
 	id = data["name"]
-	temp = data["temperature"]
+	temp = round(float(data["temperature"]), 2)
 	angle = data["angle"]
 	battery = data["battery"]
 
-	for idx, value in cbpi.cache["sensors"].iteritems():
-		if type(value.instance) is Hydrometer:
-			if value.instance.sensorType == "Temperature":
-				cache[id] = temp
-			elif value.instance.sensorType == "Gravity":
-				cache[id] = calcGravity(value.instance.tuningPolynom, angle)
-			elif value.instance.sensorType == "Battery":
-				cache[id] = battery
+	cache[id] = {'Temperature': temp, 'Angle': angle, 'Battery': battery}
 
 	return ('', 204)
 
 @cbpi.initalizer()
 def init(cbpi):
-	print "INITIALIZE HYDROMETER MODULE"
+	print "INITIALIZE ISPINDEL MODULE"
 	cbpi.app.register_blueprint(blueprint)
-	print "READY"
