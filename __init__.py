@@ -11,12 +11,16 @@ from modules.core.props import Property
 blueprint = Blueprint('ispindel', __name__)
 cache = {}
 
+def calcGravity(polynom, tilt, unitsGravity):
+	if unitsGravity == "SG":
+		rounddec = 3
+	else:
+		rounddec = 2
 
-def calcGravity(polynom, tilt):
 	# Calculate gravity from polynomial
 	tilt = float(tilt)
 	result = eval(polynom)
-	result = round(float(result),2)
+	result = round(float(result),rounddec)
 	return result
 
 @cbpi.sensor
@@ -45,7 +49,7 @@ class iSpindel(SensorActive):
 			try:				
 				if cache[self.key] is not None:
 					if self.sensorType == "Gravity":
-						reading = calcGravity(self.tuningPolynom, cache[self.key]['Angle'])
+						reading = calcGravity(self.tuningPolynom, cache[self.key]['Angle'], self.unitsGravity)
 					else:
 						reading = cache[self.key][self.sensorType]
 					self.data_received(reading)
