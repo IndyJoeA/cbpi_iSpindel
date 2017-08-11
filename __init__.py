@@ -25,10 +25,10 @@ def calcGravity(polynom, tilt, unitsGravity):
 
 @cbpi.sensor
 class iSpindel(SensorActive):
-	key = Property.Text(label="iSpindel Name", configurable=True)
-	sensorType = Property.Select("Data Type", options=["Temperature", "Gravity", "Battery"])
-	tuningPolynom = Property.Text(label="Tuning Polynomial", configurable=True, default_value="tilt")
-	unitsGravity = Property.Select("Gravity Units", options=["SG", "Brix", "°P"])
+	key = Property.Text(label="iSpindel Name", configurable=True, description="Enter the name of your iSpindel")
+	sensorType = Property.Select("Data Type", options=["Temperature", "Gravity", "Battery"], description="Select which type of data to register for this sensor")
+	tuningPolynom = Property.Text(label="Tuning Polynomial", configurable=True, default_value="tilt", description="Enter your iSpindel polynomial. Use the variable tilt for the angle reading from iSpindel. Does not support ^ character.")
+	unitsGravity = Property.Select("Gravity Units", options=["SG", "Brix", "°P"], description="Displays gravity reading with this unit if the Data Type is set to Gravity. Does not convert between units, to do that modify your polynomial.")
 
 	def get_unit(self):
 		if self.sensorType == "Temperature":
